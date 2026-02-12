@@ -51,52 +51,55 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="sticky top-0 z-30 border-b bg-card/80 backdrop-blur-md">
-        <div className="flex h-14 items-center gap-3 px-4 lg:px-6">
+      <header className="sticky top-0 z-30 border-b border-border/50 bg-card/60 backdrop-blur-xl">
+        <div className="flex h-16 items-center gap-3 px-4 lg:px-6">
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden h-8 w-8 p-0"
+            className="lg:hidden h-9 w-9 p-0"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
             {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </Button>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-              <Landmark className="h-4 w-4 text-primary-foreground" />
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(196,53%,60%)] shadow-md shadow-primary/25">
+              <Landmark className="h-4.5 w-4.5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-sm font-bold leading-none">Emendas Parlamentares</h1>
-              <p className="text-[10px] text-muted-foreground">Teresópolis/RJ — 2025</p>
+              <h1 className="text-base font-extrabold tracking-tight leading-none">Emendas Parlamentares</h1>
+              <p className="text-[11px] text-muted-foreground font-medium">Teresópolis/RJ — Painel Executivo 2025</p>
             </div>
           </div>
-          <div className="ml-auto text-xs text-muted-foreground">
-            {filteredData.length} de {emendasData.length} emendas
+          <div className="ml-auto">
+            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+              {filteredData.length} de {emendasData.length} emendas
+            </span>
           </div>
         </div>
       </header>
 
       <div className="flex">
         {/* Sidebar - Desktop */}
-        <aside className="hidden lg:block w-64 shrink-0 border-r bg-card p-4 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto scrollbar-thin">
+        <aside className="hidden lg:block w-[270px] shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-sm p-5 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin">
           <FiltersSidebar filters={filters} onChange={setFilters} onExportCSV={handleExportCSV} />
         </aside>
 
         {/* Sidebar - Mobile overlay */}
         {sidebarOpen && (
           <div className="fixed inset-0 z-40 lg:hidden">
-            <div className="absolute inset-0 bg-foreground/20 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-            <aside className="relative z-50 w-72 h-full bg-card p-4 overflow-y-auto shadow-xl">
+            <div className="absolute inset-0 bg-foreground/30 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+            <aside className="relative z-50 w-72 h-full bg-card p-5 overflow-y-auto shadow-2xl">
               <FiltersSidebar filters={filters} onChange={setFilters} onExportCSV={handleExportCSV} />
             </aside>
           </div>
         )}
 
         {/* Main content */}
-        <main className="flex-1 min-w-0 p-4 lg:p-6 space-y-6">
+        <main className="flex-1 min-w-0 p-4 lg:p-6 space-y-5">
           <KPICards data={filteredData} />
 
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
             <TopParlamentaresChart data={filteredData} />
             <PartidoDonutChart data={filteredData} />
           </div>

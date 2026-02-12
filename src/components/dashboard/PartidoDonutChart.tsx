@@ -17,9 +17,9 @@ export function PartidoDonutChart({ data }: Props) {
     .map(([name, value]) => ({ name, value }));
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="border-border/50 shadow-sm rounded-2xl overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">Distribuição por Partido</CardTitle>
+        <CardTitle className="text-sm font-bold tracking-tight">Distribuição por Partido</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="h-[360px]">

@@ -21,9 +21,9 @@ export function TopParlamentaresChart({ data }: Props) {
     }));
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="border-border/50 shadow-sm rounded-2xl overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">Top 10 Parlamentares por Valor</CardTitle>
+        <CardTitle className="text-sm font-bold tracking-tight">Top 10 Parlamentares por Valor</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="h-[360px]">

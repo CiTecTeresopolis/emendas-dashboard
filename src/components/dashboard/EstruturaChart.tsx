@@ -17,9 +17,9 @@ export function EstruturaChart({ data }: Props) {
     .map(([name, value]) => ({ name, value }));
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="border-border/50 shadow-sm rounded-2xl overflow-hidden">
       <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-semibold">Valor por Área (Estrutura)</CardTitle>
+        <CardTitle className="text-sm font-bold tracking-tight">Valor por Área (Estrutura)</CardTitle>
       </CardHeader>
       <CardContent className="pt-0">
         <div className="h-[360px]">

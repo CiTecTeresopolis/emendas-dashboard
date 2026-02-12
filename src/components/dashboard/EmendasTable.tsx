@@ -53,10 +53,10 @@ export function EmendasTable({ data }: Props) {
   );
 
   return (
-    <Card className="border-0 shadow-sm">
+    <Card className="border-border/50 shadow-sm rounded-2xl overflow-hidden">
       <CardHeader className="pb-3">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-sm font-semibold">Detalhamento de Emendas</CardTitle>
+          <CardTitle className="text-sm font-bold tracking-tight">Detalhamento de Emendas</CardTitle>
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
             <Input
