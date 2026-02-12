@@ -6,7 +6,7 @@
 
 @layer base {
   :root {
-    --background: 200 20% 96%;
+    --background: 210 20% 97%;
     --foreground: 201 95% 14%;
 
     --card: 0 0% 100%;
@@ -18,11 +18,11 @@
     --primary: 199 72% 44%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 196 53% 80%;
+    --secondary: 196 40% 92%;
     --secondary-foreground: 201 95% 14%;
 
-    --muted: 200 18% 91%;
-    --muted-foreground: 201 30% 40%;
+    --muted: 210 14% 92%;
+    --muted-foreground: 201 20% 46%;
 
     --accent: 45 100% 50%;
     --accent-foreground: 201 95% 14%;
@@ -30,20 +30,21 @@
     --destructive: 27 97% 49%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 200 18% 88%;
-    --input: 200 18% 86%;
+    --border: 210 16% 90%;
+    --input: 210 16% 88%;
     --ring: 199 72% 44%;
 
     --radius: 0.75rem;
 
     --sidebar-background: 201 95% 14%;
-    --sidebar-foreground: 196 53% 80%;
+    --sidebar-foreground: 196 30% 75%;
     --sidebar-primary: 45 100% 50%;
     --sidebar-primary-foreground: 201 95% 14%;
     --sidebar-accent: 201 70% 20%;
-    --sidebar-accent-foreground: 196 53% 85%;
-    --sidebar-border: 201 60% 22%;
+    --sidebar-accent-foreground: 196 40% 88%;
+    --sidebar-border: 201 50% 22%;
     --sidebar-ring: 199 72% 44%;
+    --sidebar-muted: 201 40% 30%;
 
     --chart-1: 199 72% 44%;
     --chart-2: 45 100% 50%;
@@ -109,9 +110,5 @@
   .scrollbar-thin {
     scrollbar-width: thin;
     scrollbar-color: hsl(var(--muted)) transparent;
-  }
-
-  .glass-card {
-    @apply bg-card/70 backdrop-blur-xl border border-border/50 shadow-lg;
   }
 }

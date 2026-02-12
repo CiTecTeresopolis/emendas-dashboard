@@ -1,9 +1,8 @@
 import { useState, useMemo } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowUpDown, Search } from "lucide-react";
+import { ArrowUpDown, Search, TableIcon } from "lucide-react";
 import { Emenda, formatBRL, PARTY_COLORS } from "@/data/emendas";
 
 interface Props {
@@ -42,80 +41,84 @@ export function EmendasTable({ data }: Props) {
 
   const SortHeader = ({ label, field }: { label: string; field: SortKey }) => (
     <TableHead
-      className="cursor-pointer select-none hover:text-foreground transition-colors text-xs"
+      className="cursor-pointer select-none hover:text-foreground transition-colors text-[11px] font-bold uppercase tracking-wider text-muted-foreground"
       onClick={() => handleSort(field)}
     >
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1.5">
         {label}
-        <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
+        <ArrowUpDown className={`h-3 w-3 ${sortKey === field ? "text-primary" : "text-muted-foreground/50"}`} />
       </div>
     </TableHead>
   );
 
   return (
-    <Card className="border-border/50 shadow-sm rounded-2xl overflow-hidden">
-      <CardHeader className="pb-3">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle className="text-sm font-bold tracking-tight">Detalhamento de Emendas</CardTitle>
-          <div className="relative w-full sm:w-64">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Buscar emendas..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 h-9 text-sm"
-            />
+    <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden">
+      <div className="px-6 pt-5 pb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2.5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <TableIcon className="h-4 w-4 text-primary" />
+          </div>
+          <div>
+            <h3 className="text-sm font-bold">Detalhamento</h3>
+            <p className="text-[10px] text-muted-foreground">{filtered.length} resultado{filtered.length !== 1 ? "s" : ""}</p>
           </div>
         </div>
-      </CardHeader>
-      <CardContent className="pt-0">
-        <div className="overflow-x-auto scrollbar-thin max-h-[420px] overflow-y-auto">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <SortHeader label="Parlamentar" field="parlamentar" />
-                <SortHeader label="Partido" field="partido" />
-                <SortHeader label="Valor" field="valorProposto" />
-                <SortHeader label="Estrutura" field="estrutura" />
-                <SortHeader label="Origem" field="origem" />
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filtered.map((e, i) => (
-                <TableRow key={i} className="text-sm">
-                  <TableCell className="font-medium max-w-[200px] truncate">{e.parlamentar}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="secondary"
-                      className="text-[10px] font-semibold border-0"
-                      style={{
-                        backgroundColor: `${PARTY_COLORS[e.partido] || "hsl(215,16%,47%)"}20`,
-                        color: PARTY_COLORS[e.partido] || "hsl(215,16%,47%)",
-                      }}
-                    >
-                      {e.partido}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="font-semibold tabular-nums">{formatBRL(e.valorProposto)}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="text-[10px]">{e.estrutura}</Badge>
-                  </TableCell>
-                  <TableCell className="max-w-[180px] truncate text-muted-foreground text-xs">
-                    {e.origem}
-                  </TableCell>
-                </TableRow>
-              ))}
-              {filtered.length === 0 && (
-                <TableRow>
-                  <TableCell colSpan={5} className="text-center text-muted-foreground py-8">
-                    Nenhuma emenda encontrada.
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+        <div className="relative w-full sm:w-72">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Buscar por nome, partido, área..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="pl-10 h-10 text-sm rounded-xl bg-muted/30 border-border focus:bg-card"
+          />
         </div>
-      </CardContent>
-    </Card>
+      </div>
+      <div className="overflow-x-auto scrollbar-thin max-h-[460px] overflow-y-auto">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-muted/30 hover:bg-muted/30">
+              <SortHeader label="Parlamentar" field="parlamentar" />
+              <SortHeader label="Partido" field="partido" />
+              <SortHeader label="Valor" field="valorProposto" />
+              <SortHeader label="Estrutura" field="estrutura" />
+              <SortHeader label="Origem" field="origem" />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filtered.map((e, i) => (
+              <TableRow key={i} className="text-sm hover:bg-muted/20 transition-colors">
+                <TableCell className="font-semibold max-w-[220px] truncate py-3.5">{e.parlamentar}</TableCell>
+                <TableCell className="py-3.5">
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] font-bold border-0 rounded-md px-2 py-0.5"
+                    style={{
+                      backgroundColor: `${PARTY_COLORS[e.partido] || "hsl(201,20%,46%)"}18`,
+                      color: PARTY_COLORS[e.partido] || "hsl(201,20%,46%)",
+                    }}
+                  >
+                    {e.partido}
+                  </Badge>
+                </TableCell>
+                <TableCell className="font-bold tabular-nums py-3.5">{formatBRL(e.valorProposto)}</TableCell>
+                <TableCell className="py-3.5">
+                  <Badge variant="outline" className="text-[10px] font-medium rounded-md">{e.estrutura}</Badge>
+                </TableCell>
+                <TableCell className="max-w-[200px] truncate text-muted-foreground text-xs py-3.5">
+                  {e.origem}
+                </TableCell>
+              </TableRow>
+            ))}
+            {filtered.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} className="text-center text-muted-foreground py-12 text-sm">
+                  Nenhuma emenda encontrada.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
   );
 }

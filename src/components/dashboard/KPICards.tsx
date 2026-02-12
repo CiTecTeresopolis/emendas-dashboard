@@ -1,4 +1,4 @@
-import { DollarSign, FileText, Users, Building2 } from "lucide-react";
+import { DollarSign, FileText, Users, Building2, TrendingUp } from "lucide-react";
 import { Emenda, formatBRL } from "@/data/emendas";
 
 interface KPICardsProps {
@@ -23,40 +23,36 @@ export function KPICards({ data }: KPICardsProps) {
 
   const cards = [
     {
-      title: "Valor Total em Emendas",
+      title: "Valor Total",
       value: formatBRL(totalValor),
       icon: DollarSign,
-      description: "Total proposto em 2025",
-      gradient: "from-[hsl(199,72%,44%)] to-[hsl(196,53%,60%)]",
-      iconBg: "bg-[hsl(199,72%,44%)]/15",
-      iconColor: "text-[hsl(199,72%,44%)]",
+      sub: "Total proposto em 2025",
+      color: "from-[hsl(199,72%,44%)] to-[hsl(199,72%,56%)]",
+      iconBg: "bg-[hsl(199,72%,44%)]",
     },
     {
-      title: "Quantidade de Emendas",
+      title: "Emendas",
       value: totalEmendas.toString(),
       icon: FileText,
-      description: "Emendas registradas",
-      gradient: "from-[hsl(162,60%,40%)] to-[hsl(196,53%,60%)]",
-      iconBg: "bg-[hsl(162,60%,40%)]/15",
-      iconColor: "text-[hsl(162,60%,40%)]",
+      sub: "Registradas no período",
+      color: "from-[hsl(162,60%,38%)] to-[hsl(162,60%,50%)]",
+      iconBg: "bg-[hsl(162,60%,40%)]",
     },
     {
-      title: "Partido com Maior Aporte",
+      title: "Maior Partido",
       value: topPartido?.[0] || "-",
       icon: Users,
-      description: topPartido ? formatBRL(topPartido[1]) : "",
-      gradient: "from-[hsl(45,100%,50%)] to-[hsl(27,97%,49%)]",
-      iconBg: "bg-[hsl(45,100%,50%)]/15",
-      iconColor: "text-[hsl(45,100%,50%)]",
+      sub: topPartido ? formatBRL(topPartido[1]) : "",
+      color: "from-[hsl(45,100%,50%)] to-[hsl(45,100%,60%)]",
+      iconBg: "bg-[hsl(45,100%,50%)]",
     },
     {
-      title: "Área Mais Beneficiada",
+      title: "Área Top",
       value: topEstrutura?.[0] || "-",
       icon: Building2,
-      description: topEstrutura ? formatBRL(topEstrutura[1]) : "",
-      gradient: "from-[hsl(27,97%,49%)] to-[hsl(45,100%,50%)]",
-      iconBg: "bg-[hsl(27,97%,49%)]/15",
-      iconColor: "text-[hsl(27,97%,49%)]",
+      sub: topEstrutura ? formatBRL(topEstrutura[1]) : "",
+      color: "from-[hsl(27,97%,49%)] to-[hsl(27,97%,60%)]",
+      iconBg: "bg-[hsl(27,97%,49%)]",
     },
   ];
 
@@ -65,23 +61,24 @@ export function KPICards({ data }: KPICardsProps) {
       {cards.map((card, i) => (
         <div
           key={card.title}
-          className="group relative overflow-hidden rounded-2xl bg-card border border-border/50 shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5"
-          style={{ animationDelay: `${i * 80}ms` }}
+          className="group relative rounded-2xl bg-card border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
         >
-          {/* Top gradient accent line */}
-          <div className={`h-1 w-full bg-gradient-to-r ${card.gradient}`} />
-          <div className="p-5">
-            <div className="flex items-start justify-between">
-              <div className="space-y-1.5">
-                <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
-                  {card.title}
-                </p>
-                <p className="text-2xl font-extrabold tracking-tight">{card.value}</p>
-                <p className="text-xs text-muted-foreground">{card.description}</p>
+          {/* Gradient accent bar */}
+          <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.color}`} />
+
+          <div className="p-5 pt-5">
+            <div className="flex items-start justify-between mb-3">
+              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+                {card.title}
+              </p>
+              <div className={`${card.iconBg} rounded-xl p-2 shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+                <card.icon className="h-4 w-4 text-primary-foreground" />
               </div>
-              <div className={`rounded-xl p-2.5 ${card.iconBg} transition-transform duration-300 group-hover:scale-110`}>
-                <card.icon className={`h-5 w-5 ${card.iconColor}`} />
-              </div>
+            </div>
+            <p className="text-[1.6rem] font-extrabold tracking-tight leading-none mb-1.5">{card.value}</p>
+            <div className="flex items-center gap-1.5">
+              <TrendingUp className="h-3 w-3 text-muted-foreground" />
+              <p className="text-[11px] text-muted-foreground font-medium">{card.sub}</p>
             </div>
           </div>
         </div>
