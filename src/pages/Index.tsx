@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from "react";
-import { Landmark, Menu, X } from "lucide-react";
+import { Landmark, Menu, X, TrendingUp, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { emendasData, Emenda } from "@/data/emendas";
+import { emendasData, Emenda, formatBRL } from "@/data/emendas";
 import { KPICards } from "@/components/dashboard/KPICards";
 import { TopParlamentaresChart } from "@/components/dashboard/TopParlamentaresChart";
 import { PartidoDonutChart } from "@/components/dashboard/PartidoDonutChart";
@@ -31,12 +31,7 @@ const Index = () => {
   const handleExportCSV = useCallback(() => {
     const headers = ["Parlamentar", "Partido", "Valor Proposto", "Estrutura", "Origem", "Objeto"];
     const rows = filteredData.map((e) => [
-      e.parlamentar,
-      e.partido,
-      e.valorProposto.toString(),
-      e.estrutura,
-      e.origem,
-      `"${e.objeto}"`,
+      e.parlamentar, e.partido, e.valorProposto.toString(), e.estrutura, e.origem, `"${e.objeto}"`,
     ]);
     const csv = [headers.join(";"), ...rows.map((r) => r.join(";"))].join("\n");
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
@@ -48,64 +43,88 @@ const Index = () => {
     URL.revokeObjectURL(url);
   }, [filteredData]);
 
+  const totalValor = filteredData.reduce((s, e) => s + e.valorProposto, 0);
+
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-30 border-b border-border/50 bg-card/60 backdrop-blur-xl">
-        <div className="flex h-16 items-center gap-3 px-4 lg:px-6">
+    <div className="min-h-screen flex flex-col bg-background">
+      {/* ─── HEADER ─── */}
+      <header className="sticky top-0 z-40 bg-sidebar text-sidebar-foreground">
+        <div className="flex h-16 items-center gap-4 px-5 lg:px-8">
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden h-9 w-9 p-0"
+            className="lg:hidden h-9 w-9 p-0 text-sidebar-foreground hover:bg-sidebar-accent"
             onClick={() => setSidebarOpen(!sidebarOpen)}
           >
-            {sidebarOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+            {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </Button>
+
           <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary to-[hsl(196,53%,60%)] shadow-md shadow-primary/25">
-              <Landmark className="h-4.5 w-4.5 text-primary-foreground" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-accent shadow-lg shadow-accent/30">
+              <Landmark className="h-5 w-5 text-accent-foreground" />
             </div>
             <div>
-              <h1 className="text-base font-extrabold tracking-tight leading-none">Emendas Parlamentares</h1>
-              <p className="text-[11px] text-muted-foreground font-medium">Teresópolis/RJ — Painel Executivo 2025</p>
+              <h1 className="text-base font-extrabold tracking-tight text-sidebar-accent-foreground">
+                Emendas Parlamentares
+              </h1>
+              <p className="text-[11px] font-medium text-sidebar-foreground/60">
+                Painel Executivo · Teresópolis/RJ
+              </p>
             </div>
           </div>
-          <div className="ml-auto">
-            <span className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-              {filteredData.length} de {emendasData.length} emendas
+
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden md:flex items-center gap-2 text-[11px] font-medium text-sidebar-foreground/60">
+              <Calendar className="h-3.5 w-3.5" />
+              <span>2025</span>
+            </div>
+            <div className="hidden sm:flex items-center gap-2 rounded-full bg-sidebar-accent px-3.5 py-1.5">
+              <TrendingUp className="h-3.5 w-3.5 text-accent" />
+              <span className="text-xs font-bold text-sidebar-accent-foreground">
+                {formatBRL(totalValor)}
+              </span>
+            </div>
+            <span className="flex items-center gap-1.5 rounded-full bg-accent/15 px-3 py-1 text-[11px] font-semibold text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent animate-pulse" />
+              {filteredData.length}/{emendasData.length}
             </span>
           </div>
         </div>
       </header>
 
-      <div className="flex">
-        {/* Sidebar - Desktop */}
-        <aside className="hidden lg:block w-[270px] shrink-0 border-r border-border/50 bg-card/50 backdrop-blur-sm p-5 sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin">
-          <FiltersSidebar filters={filters} onChange={setFilters} onExportCSV={handleExportCSV} />
+      {/* ─── BODY ─── */}
+      <div className="flex flex-1">
+        {/* Sidebar Desktop */}
+        <aside className="hidden lg:flex flex-col w-[280px] shrink-0 border-r border-border bg-card sticky top-16 h-[calc(100vh-4rem)] overflow-y-auto scrollbar-thin">
+          <div className="p-5 flex-1">
+            <FiltersSidebar filters={filters} onChange={setFilters} onExportCSV={handleExportCSV} />
+          </div>
         </aside>
 
-        {/* Sidebar - Mobile overlay */}
+        {/* Sidebar Mobile */}
         {sidebarOpen && (
-          <div className="fixed inset-0 z-40 lg:hidden">
-            <div className="absolute inset-0 bg-foreground/30 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
-            <aside className="relative z-50 w-72 h-full bg-card p-5 overflow-y-auto shadow-2xl">
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <div className="absolute inset-0 bg-foreground/40 backdrop-blur-sm" onClick={() => setSidebarOpen(false)} />
+            <aside className="relative z-50 w-80 h-full bg-card p-5 overflow-y-auto shadow-2xl border-r border-border">
               <FiltersSidebar filters={filters} onChange={setFilters} onExportCSV={handleExportCSV} />
             </aside>
           </div>
         )}
 
-        {/* Main content */}
-        <main className="flex-1 min-w-0 p-4 lg:p-6 space-y-5">
+        {/* Main */}
+        <main className="flex-1 min-w-0 p-5 lg:p-8 space-y-6 max-w-[1440px]">
           <KPICards data={filteredData} />
 
-          <div className="grid grid-cols-1 gap-5 xl:grid-cols-2">
-            <TopParlamentaresChart data={filteredData} />
-            <PartidoDonutChart data={filteredData} />
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+            <div className="xl:col-span-3">
+              <TopParlamentaresChart data={filteredData} />
+            </div>
+            <div className="xl:col-span-2">
+              <PartidoDonutChart data={filteredData} />
+            </div>
           </div>
 
           <EstruturaChart data={filteredData} />
-
           <EmendasTable data={filteredData} />
         </main>
       </div>
