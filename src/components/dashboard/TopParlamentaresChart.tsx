@@ -1,5 +1,18 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Emenda, formatBRL, formatBRLCompact, CHART_COLORS } from "@/data/emendas";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Cell,
+} from "recharts";
+import {
+  Emenda,
+  formatBRL,
+  formatBRLCompact,
+  CHART_COLORS,
+} from "@/data/emendas";
 import { BarChart3 } from "lucide-react";
 
 interface Props {
@@ -14,7 +27,7 @@ export function TopParlamentaresChart({ data }: Props) {
 
   const chartData = Object.entries(parlamentarTotals)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
+    .slice(0, 5)
     .map(([name, value]) => ({
       name: name.replace(/^(Deputad[oa] Federal |Senador[a]? )/, ""),
       value,
@@ -27,19 +40,44 @@ export function TopParlamentaresChart({ data }: Props) {
           <BarChart3 className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <h3 className="text-sm font-bold">Top 10 Parlamentares</h3>
-          <p className="text-[10px] text-muted-foreground">Por valor proposto</p>
+          <h3 className="text-lg font-bold">Top 5 Parlamentares</h3>
+          <p className="text-[12px] text-muted-foreground">
+            Por valor proposto
+          </p>
         </div>
       </div>
       <div className="px-4 pb-5">
         <div className="h-[380px]">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} layout="vertical" margin={{ left: 10, right: 20, top: 10, bottom: 5 }}>
-              <XAxis type="number" tickFormatter={(v) => formatBRLCompact(v)} tick={{ fontSize: 10, fill: "hsl(201,20%,46%)" }} axisLine={false} tickLine={false} />
-              <YAxis type="category" dataKey="name" width={135} tick={{ fontSize: 11, fill: "hsl(201,95%,14%)" }} axisLine={false} tickLine={false} />
+            <BarChart
+              data={chartData}
+              layout="vertical"
+              margin={{ left: 10, right: 20, top: 10, bottom: 5 }}
+            >
+              <XAxis
+                type="number"
+                tickFormatter={(v) => formatBRLCompact(v)}
+                tick={{ fontSize: 16, fill: "hsl(201,20%,46%)" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                type="category"
+                dataKey="name"
+                width={135}
+                tick={{ fontSize: 14, fill: "hsl(201,95%,14%)" }}
+                axisLine={false}
+                tickLine={false}
+              />
               <Tooltip
                 formatter={(value: number) => [formatBRL(value), "Valor"]}
-                contentStyle={{ borderRadius: 12, border: "1px solid hsl(210,16%,90%)", boxShadow: "0 8px 24px rgba(0,0,0,0.08)", fontFamily: "Plus Jakarta Sans", fontSize: 12 }}
+                contentStyle={{
+                  borderRadius: 12,
+                  border: "1px solid hsl(210,16%,90%)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontSize: 14,
+                }}
                 cursor={{ fill: "hsl(210,14%,92%)", radius: 6 }}
               />
               <Bar dataKey="value" radius={[0, 8, 8, 0]} barSize={22}>

@@ -1,4 +1,11 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  Legend,
+} from "recharts";
 import { Emenda, formatBRL, CHART_COLORS } from "@/data/emendas";
 import { PieChartIcon } from "lucide-react";
 
@@ -14,6 +21,7 @@ export function PartidoDonutChart({ data }: Props) {
 
   const chartData = Object.entries(partidoTotals)
     .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
     .map(([name, value]) => ({ name, value }));
 
   const total = chartData.reduce((s, d) => s + d.value, 0);
@@ -25,8 +33,10 @@ export function PartidoDonutChart({ data }: Props) {
           <PieChartIcon className="h-4 w-4 text-accent" />
         </div>
         <div>
-          <h3 className="text-sm font-bold">Por Partido</h3>
-          <p className="text-[10px] text-muted-foreground">Distribuição de valores</p>
+          <h3 className="text-lg font-bold">Top 5 Partidos</h3>
+          <p className="text-[12px] text-muted-foreground">
+            Distribuição de valores
+          </p>
         </div>
       </div>
       <div className="px-4 pb-5">
@@ -51,13 +61,23 @@ export function PartidoDonutChart({ data }: Props) {
               </Pie>
               <Tooltip
                 formatter={(value: number) => [formatBRL(value), "Valor"]}
-                contentStyle={{ borderRadius: 12, border: "1px solid hsl(210,16%,90%)", boxShadow: "0 8px 24px rgba(0,0,0,0.08)", fontFamily: "Plus Jakarta Sans", fontSize: 12 }}
+                contentStyle={{
+                  borderRadius: 12,
+                  border: "1px solid hsl(210,16%,90%)",
+                  boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
+                  fontFamily: "Plus Jakarta Sans",
+                  fontSize: 14,
+                }}
               />
               <Legend
                 verticalAlign="bottom"
                 iconType="circle"
                 iconSize={8}
-                wrapperStyle={{ fontSize: 11, paddingTop: 16, fontFamily: "Plus Jakarta Sans" }}
+                wrapperStyle={{
+                  fontSize: 16,
+                  paddingTop: 16,
+                  fontFamily: "Plus Jakarta Sans",
+                }}
               />
             </PieChart>
           </ResponsiveContainer>

@@ -1,4 +1,10 @@
-import { DollarSign, FileText, Users, Building2, TrendingUp } from "lucide-react";
+import {
+  DollarSign,
+  FileText,
+  Users,
+  Building2,
+  TrendingUp,
+} from "lucide-react";
 import { Emenda, formatBRL } from "@/data/emendas";
 
 interface KPICardsProps {
@@ -13,13 +19,17 @@ export function KPICards({ data }: KPICardsProps) {
     acc[e.partido] = (acc[e.partido] || 0) + e.valorProposto;
     return acc;
   }, {});
-  const topPartido = Object.entries(partidoTotals).sort((a, b) => b[1] - a[1])[0];
+  const topPartido = Object.entries(partidoTotals).sort(
+    (a, b) => b[1] - a[1],
+  )[0];
 
   const estruturaTotals = data.reduce<Record<string, number>>((acc, e) => {
     acc[e.estrutura] = (acc[e.estrutura] || 0) + e.valorProposto;
     return acc;
   }, {});
-  const topEstrutura = Object.entries(estruturaTotals).sort((a, b) => b[1] - a[1])[0];
+  const topEstrutura = Object.entries(estruturaTotals).sort(
+    (a, b) => b[1] - a[1],
+  )[0];
 
   const cards = [
     {
@@ -35,24 +45,24 @@ export function KPICards({ data }: KPICardsProps) {
       value: totalEmendas.toString(),
       icon: FileText,
       sub: "Registradas no período",
-      color: "from-[hsl(162,60%,38%)] to-[hsl(162,60%,50%)]",
-      iconBg: "bg-[hsl(162,60%,40%)]",
+      color: "from-[hsl(199,72%,44%)] to-[hsl(199,72%,56%)]",
+      iconBg: "bg-[hsl(199,72%,44%)]",
     },
     {
-      title: "Maior Partido",
+      title: "Maior Propositor",
       value: topPartido?.[0] || "-",
       icon: Users,
       sub: topPartido ? formatBRL(topPartido[1]) : "",
-      color: "from-[hsl(45,100%,50%)] to-[hsl(45,100%,60%)]",
-      iconBg: "bg-[hsl(45,100%,50%)]",
+      color: "from-[hsl(199,72%,44%)] to-[hsl(199,72%,56%)]",
+      iconBg: "bg-[hsl(199,72%,44%)]",
     },
     {
-      title: "Área Top",
+      title: "Maior Recurso Proposto",
       value: topEstrutura?.[0] || "-",
       icon: Building2,
       sub: topEstrutura ? formatBRL(topEstrutura[1]) : "",
-      color: "from-[hsl(27,97%,49%)] to-[hsl(27,97%,60%)]",
-      iconBg: "bg-[hsl(27,97%,49%)]",
+      color: "from-[hsl(199,72%,44%)] to-[hsl(199,72%,56%)]",
+      iconBg: "bg-[hsl(199,72%,44%)]",
     },
   ];
 
@@ -64,21 +74,29 @@ export function KPICards({ data }: KPICardsProps) {
           className="group relative rounded-2xl bg-card border border-border shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 overflow-hidden"
         >
           {/* Gradient accent bar */}
-          <div className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.color}`} />
+          <div
+            className={`absolute top-0 left-0 right-0 h-1 bg-gradient-to-r ${card.color}`}
+          />
 
           <div className="p-5 pt-5">
             <div className="flex items-start justify-between mb-3">
-              <p className="text-[11px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
+              <p className="text-[15px] font-bold uppercase tracking-[0.12em] text-muted-foreground">
                 {card.title}
               </p>
-              <div className={`${card.iconBg} rounded-xl p-2 shadow-lg transition-transform duration-300 group-hover:scale-110`}>
+              <div
+                className={`${card.iconBg} rounded-xl p-2 shadow-lg transition-transform duration-300 group-hover:scale-110`}
+              >
                 <card.icon className="h-4 w-4 text-primary-foreground" />
               </div>
             </div>
-            <p className="text-[1.6rem] font-extrabold tracking-tight leading-none mb-1.5">{card.value}</p>
+            <p className="text-[1.8rem] font-extrabold tracking-tight leading-none mb-1.5">
+              {card.value}
+            </p>
             <div className="flex items-center gap-1.5">
               <TrendingUp className="h-3 w-3 text-muted-foreground" />
-              <p className="text-[11px] text-muted-foreground font-medium">{card.sub}</p>
+              <p className="text-[14px] text-muted-foreground font-medium">
+                {card.sub}
+              </p>
             </div>
           </div>
         </div>
