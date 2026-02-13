@@ -108,7 +108,7 @@ export function AnaliseSintetica({ data }: Props) {
         </div>
 
         <div className="px-6 py-3 bg-muted/10 border-t border-border/50 text-[10px] text-muted-foreground text-right italic">
-          Fonte: Dotações Orçamentárias 2025
+          Fonte: Dotações Orçamentárias da União
         </div>
       </div>
 
