@@ -1,30 +1,104 @@
+import { useState } from "react";
 import {
-  PieChart,
   Pie,
   Cell,
+  PieChart,
   ResponsiveContainer,
-  Tooltip,
+  Sector,
   Legend,
 } from "recharts";
 import { Emenda, formatBRL, CHART_COLORS } from "@/data/emendas";
 import { PieChartIcon } from "lucide-react";
 
+// 1. Definição da interface para os dados do gráfico
+interface ChartDataItem {
+  name: string;
+  value: number;
+}
+
 interface Props {
   data: Emenda[];
 }
 
+// 2. Tipagem para as propriedades do Active Shape (provenientes do Recharts)
+interface ActiveShapeProps {
+  cx: number;
+  cy: number;
+  innerRadius: number;
+  outerRadius: number;
+  startAngle: number;
+  endAngle: number;
+  fill: string;
+  payload: ChartDataItem;
+}
+
+const renderActiveShape = (props: ActiveShapeProps) => {
+  const {
+    cx,
+    cy,
+    innerRadius,
+    outerRadius,
+    startAngle,
+    endAngle,
+    fill,
+    payload,
+  } = props;
+
+  return (
+    <g>
+      <text
+        x={cx}
+        y={cy}
+        dy={-8}
+        textAnchor="middle"
+        className="fill-muted-foreground text-[12px] font-medium uppercase tracking-wider"
+      >
+        Partido
+      </text>
+      <text
+        x={cx}
+        y={cy}
+        dy={20}
+        textAnchor="middle"
+        className="fill-foreground text-md font-bold"
+      >
+        {payload.name}
+      </text>
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 6}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+    </g>
+  );
+};
+
 export function PartidoDonutChart({ data }: Props) {
+  const [activeIndex, setActiveIndex] = useState<number | undefined>(undefined);
+
   const partidoTotals = data.reduce<Record<string, number>>((acc, e) => {
     acc[e.partido] = (acc[e.partido] || 0) + e.valorProposto;
     return acc;
   }, {});
 
-  const chartData = Object.entries(partidoTotals)
+  const chartData: ChartDataItem[] = Object.entries(partidoTotals)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 5)
     .map(([name, value]) => ({ name, value }));
 
-  const total = chartData.reduce((s, d) => s + d.value, 0);
+  // 3. Tipagem dos eventos de Mouse
+  // O Recharts passa o objeto de dados como primeiro argumento e o índice como segundo
+  const onPieEnter = (_: unknown, index: number) => {
+    setActiveIndex(index);
+  };
+
+  const onPieLeave = () => {
+    setActiveIndex(undefined);
+  };
 
   return (
     <div className="rounded-2xl bg-card border border-border shadow-sm overflow-hidden h-full">
@@ -35,52 +109,56 @@ export function PartidoDonutChart({ data }: Props) {
         <div>
           <h3 className="text-lg font-bold">Top 5 Partidos</h3>
           <p className="text-[12px] text-muted-foreground">
-            Distribuição de valores
+            Passe o mouse para ver os valores
           </p>
         </div>
       </div>
+
       <div className="px-4 pb-5">
-        <div className="h-[380px] relative">
+        <div className="h-[400px] relative">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie
+                activeIndex={activeIndex}
+                activeShape={renderActiveShape}
                 data={chartData}
                 cx="50%"
                 cy="42%"
-                innerRadius={70}
+                innerRadius={75}
                 outerRadius={120}
-                paddingAngle={3}
+                paddingAngle={4}
                 dataKey="value"
-                nameKey="name"
-                stroke="hsl(0,0%,100%)"
-                strokeWidth={3}
+                onMouseEnter={onPieEnter}
+                onMouseLeave={onPieLeave}
+                labelLine={false}
+                label={({ percent }: { percent: number }) =>
+                  `${(percent * 100).toFixed(0)}%`
+                }
+                stroke="none"
               >
                 {chartData.map((_, i) => (
-                  <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
+                  <Cell
+                    key={`cell-${i}`}
+                    fill={CHART_COLORS[i % CHART_COLORS.length]}
+                    className="outline-none"
+                  />
                 ))}
               </Pie>
-              <Tooltip
-                formatter={(value: number) => [formatBRL(value), "Valor"]}
-                contentStyle={{
-                  borderRadius: 12,
-                  border: "1px solid hsl(210,16%,90%)",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-                  fontFamily: "Plus Jakarta Sans",
-                  fontSize: 14,
-                }}
-              />
               <Legend
                 verticalAlign="bottom"
                 iconType="circle"
-                iconSize={8}
-                wrapperStyle={{
-                  fontSize: 16,
-                  paddingTop: 16,
-                  fontFamily: "Plus Jakarta Sans",
-                }}
+                wrapperStyle={{ fontSize: 14, paddingTop: 20 }}
               />
             </PieChart>
           </ResponsiveContainer>
+
+          {activeIndex !== undefined && (
+            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 pointer-events-none text-center bg-background/80 backdrop-blur-sm px-3 py-1 rounded-full border border-border">
+              <p className="text-sm font-bold">
+                {formatBRL(chartData[activeIndex].value)}
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>

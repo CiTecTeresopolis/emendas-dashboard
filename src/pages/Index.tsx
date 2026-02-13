@@ -8,11 +8,11 @@ import { PartidoDonutChart } from "@/components/dashboard/PartidoDonutChart";
 import { EstruturaChart } from "@/components/dashboard/EstruturaChart";
 import { EmendasTable } from "@/components/dashboard/EmendasTable";
 import { FiltersSidebar, Filters } from "@/components/dashboard/FiltersSidebar";
+import { AnaliseSintetica } from "@/components/dashboard/AnaliseSintetica";
 
 const maxValue = Math.max(...emendasData.map((e) => e.valorProposto));
 
 const Index = () => {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [filters, setFilters] = useState<Filters>({
     partidos: [],
     parlamentares: [],
@@ -137,8 +137,14 @@ const Index = () => {
               <PartidoDonutChart data={filteredData} />
             </div>
           </div>
-
-          <EstruturaChart data={filteredData} />
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
+            <div className="xl:col-span-2">
+              <EstruturaChart data={filteredData} />
+            </div>
+            <div className="xl:col-span-3">
+              <AnaliseSintetica data={filteredData} />
+            </div>
+          </div>
           <EmendasTable data={filteredData} />
         </main>
       </div>

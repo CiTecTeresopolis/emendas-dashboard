@@ -36,7 +36,7 @@ export function KPICards({ data }: KPICardsProps) {
       title: "Valor Total",
       value: formatBRL(totalValor),
       icon: DollarSign,
-      sub: "Total proposto em 2025",
+      sub: "Total proposto",
       color: "from-[hsl(199,72%,44%)] to-[hsl(199,72%,56%)]",
       iconBg: "bg-[hsl(199,72%,44%)]",
     },
@@ -49,7 +49,7 @@ export function KPICards({ data }: KPICardsProps) {
       iconBg: "bg-[hsl(199,72%,44%)]",
     },
     {
-      title: "Maior Propositor",
+      title: "Maior Proposição",
       value: topPartido?.[0] || "-",
       icon: Users,
       sub: topPartido ? formatBRL(topPartido[1]) : "",
