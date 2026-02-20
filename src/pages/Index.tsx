@@ -1,7 +1,14 @@
 import { useState, useMemo, useCallback } from "react";
 import { Landmark, Menu, X, TrendingUp, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { emendasData, Emenda, formatBRL } from "@/data/emendas";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { emendasData, Emenda, formatBRL, availableYears } from "@/data/emendas";
 import { KPICards } from "@/components/dashboard/KPICards";
 import { TopParlamentaresChart } from "@/components/dashboard/TopParlamentaresChart";
 import { PartidoDonutChart } from "@/components/dashboard/PartidoDonutChart";
@@ -13,6 +20,7 @@ import { AnaliseSintetica } from "@/components/dashboard/AnaliseSintetica";
 const maxValue = Math.max(...emendasData.map((e) => e.valorProposto));
 
 const Index = () => {
+  const [selectedYear, setSelectedYear] = useState<number>(availableYears[0]);
   const [filters, setFilters] = useState<Filters>({
     partidos: [],
     parlamentares: [],
@@ -21,6 +29,7 @@ const Index = () => {
 
   const filteredData = useMemo<Emenda[]>(() => {
     return emendasData.filter((e) => {
+      if (e.anoVigencia !== selectedYear) return false;
       if (filters.partidos.length > 0 && !filters.partidos.includes(e.partido))
         return false;
       if (
@@ -35,7 +44,7 @@ const Index = () => {
         return false;
       return true;
     });
-  }, [filters]);
+  }, [filters, selectedYear]);
 
   const handleExportCSV = useCallback(() => {
     const headers = [
@@ -61,7 +70,7 @@ const Index = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = url;
-    link.download = "emendas_2025.csv";
+    link.download = `emendas_${selectedYear}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }, [filteredData]);
@@ -88,11 +97,23 @@ const Index = () => {
           </div>
 
           <div className="ml-auto flex items-center gap-3">
-            <div className="hidden md:flex items-center gap-2 text-[11px] font-medium text-sidebar-foreground/60">
-              <Calendar className="h-3.5 w-3.5" />
-              <span className="text-xs font-bold text-sidebar-accent-foreground">
-                2025
-              </span>
+            <div className="flex items-center gap-2">
+              <Calendar className="h-3.5 w-3.5 text-sidebar-foreground/60" />
+              <Select
+                value={selectedYear.toString()}
+                onValueChange={(value) => setSelectedYear(Number(value))}
+              >
+                <SelectTrigger className="h-8 w-[100px] border-none bg-sidebar-accent text-xs font-bold text-sidebar-accent-foreground focus:ring-0">
+                  <SelectValue placeholder="Ano" />
+                </SelectTrigger>
+                <SelectContent>
+                  {availableYears.map((year) => (
+                    <SelectItem key={year} value={year.toString()}>
+                      {year}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="hidden sm:flex items-center gap-2 rounded-full bg-sidebar-accent px-3.5 py-1.5">
               <TrendingUp className="h-3.5 w-3.5 text-accent" />

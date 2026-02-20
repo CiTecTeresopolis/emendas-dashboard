@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   ChartColumnIncreasing,
   CheckCircle2,
@@ -11,7 +11,7 @@ import {
   TrendingUp,
   Activity,
 } from "lucide-react";
-import { Emenda } from "@/data/emendas";
+import { Emenda, formatBRL } from "@/data/emendas";
 
 interface Props {
   data: Emenda[];
@@ -19,6 +19,81 @@ interface Props {
 
 export function AnaliseSintetica({ data }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const metrics = useMemo(() => {
+    if (data.length === 0) return null;
+
+    const totalValor = data.reduce((s, e) => s + e.valorProposto, 0);
+
+    // Setor Chave (Estrutura com mais funding)
+    const porEstrutura = data.reduce((acc, e) => {
+      acc[e.estrutura] = (acc[e.estrutura] || 0) + e.valorProposto;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const setorChave = Object.entries(porEstrutura).sort((a, b) => b[1] - a[1])[0];
+    const setorChavePercent = setorChave
+      ? Math.round((setorChave[1] / totalValor) * 100)
+      : 0;
+
+    // Tipologia (Coletivas vs Individuais)
+    // Assumindo que "BANCADA" ou parlamentares com "Coletivas" no nome são coletivas
+    const coletivas = data.filter(
+      (e) =>
+        e.partido === "BANCADA" ||
+        e.parlamentar.toLowerCase().includes("bancada") ||
+        e.parlamentar.toLowerCase().includes("comissão")
+    );
+    const valorColetivas = coletivas.reduce((s, e) => s + e.valorProposto, 0);
+    const tipologiaPredominante =
+      valorColetivas > totalValor / 2
+        ? "Predomínio de emendas coletivas"
+        : "Predomínio de emendas individuais";
+
+    // Líderes Individuais (Top 3 parlamentares que não são bancada/comissão)
+    const individuais = data.filter(
+      (e) =>
+        e.partido !== "BANCADA" &&
+        !e.parlamentar.toLowerCase().includes("bancada") &&
+        !e.parlamentar.toLowerCase().includes("comissão")
+    );
+    const porParlamentarIndiv = individuais.reduce((acc, e) => {
+      acc[e.parlamentar] = (acc[e.parlamentar] || 0) + e.valorProposto;
+      return acc;
+    }, {} as Record<string, number>);
+    const lideresIndividuais = Object.entries(porParlamentarIndiv)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map((l) => l[0]);
+
+    // Partidos com Maior Aporte (Top 5)
+    const porPartido = data.reduce((acc, e) => {
+      acc[e.partido] = (acc[e.partido] || 0) + e.valorProposto;
+      return acc;
+    }, {} as Record<string, number>);
+    const topPartidos = Object.entries(porPartido)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5)
+      .map(([party]) => (party === "BANCADA" ? "Bancada (coletiva)" : party));
+
+    // Ano e Fonte
+    const ano = data[0]?.anoVigencia || 2025;
+
+    return {
+      totalValor,
+      setorChave: setorChave?.[0] || "N/A",
+      setorChavePercent,
+      tipologiaPredominante,
+      lideresIndividuais,
+      topPartidos,
+      ano,
+      valorColetivas,
+      porEstrutura,
+      porParlamentarIndiv,
+    };
+  }, [data]);
+
+  if (!metrics) return null;
 
   return (
     <>
@@ -59,7 +134,7 @@ export function AnaliseSintetica({ data }: Props) {
                 </span>
               </div>
               <p className="text-sm font-semibold text-foreground leading-snug">
-                Forte concentração na Saúde (87%)
+                Forte concentração na {metrics.setorChave} ({metrics.setorChavePercent}%)
               </p>
             </div>
             <div className="space-y-1.5">
@@ -70,7 +145,7 @@ export function AnaliseSintetica({ data }: Props) {
                 </span>
               </div>
               <p className="text-sm font-semibold text-foreground leading-snug">
-                Predomínio de emendas coletivas
+                {metrics.tipologiaPredominante}
               </p>
             </div>
           </div>
@@ -83,14 +158,18 @@ export function AnaliseSintetica({ data }: Props) {
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
-              {["Aureo Ribeiro", "Marcelo Crivella", "Bebeto"].map((name) => (
-                <span
-                  key={name}
-                  className="px-2.5 py-1 rounded-md bg-muted text-muted-foreground text-[11px] font-medium border border-border/50"
-                >
-                  {name}
-                </span>
-              ))}
+              {metrics.lideresIndividuais.length > 0 ? (
+                metrics.lideresIndividuais.map((name) => (
+                  <span
+                    key={name}
+                    className="px-2.5 py-1 rounded-md bg-muted text-muted-foreground text-[11px] font-medium border border-border/50"
+                  >
+                    {name}
+                  </span>
+                ))
+              ) : (
+                <span className="text-[11px] text-muted-foreground italic">Nenhum identificado</span>
+              )}
             </div>
           </div>
 
@@ -102,13 +181,13 @@ export function AnaliseSintetica({ data }: Props) {
               </span>
             </div>
             <p className="text-sm font-medium text-foreground/80">
-              Bancada (coletiva), Solidariedade, PL, Republicanos e PP.
+              {metrics.topPartidos.join(", ")}.
             </p>
           </div>
         </div>
 
         <div className="px-6 py-3 bg-muted/10 border-t border-border/50 text-[10px] text-muted-foreground text-right italic">
-          Fonte: Dotações Orçamentárias 2025
+          Fonte: Dotações Orçamentárias {metrics.ano}
         </div>
       </div>
 
@@ -124,10 +203,10 @@ export function AnaliseSintetica({ data }: Props) {
                 </div>
                 <div>
                   <h2 className="text-2xl font-black tracking-tight text-foreground">
-                    Análise de Dados
+                    Análise de Dados {metrics.ano}
                   </h2>
                   <p className="text-sm text-muted-foreground font-medium">
-                    Emendas Gerais Teresópolis 2025
+                    Emendas Gerais Teresópolis {metrics.ano}
                   </p>
                 </div>
               </div>
@@ -151,7 +230,7 @@ export function AnaliseSintetica({ data }: Props) {
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed bg-muted/30 p-4 rounded-xl border border-border/50">
                   O painel apresenta um retrato consolidado das emendas
-                  parlamentares destinadas a Teresópolis para 2025. Organiza
+                  parlamentares destinadas a Teresópolis. Organiza
                   valores, autores, áreas beneficiadas e origem dos recursos,
                   permitindo identificar padrões de investimento político.
                 </p>
@@ -164,7 +243,7 @@ export function AnaliseSintetica({ data }: Props) {
                     Valor Total Proposto
                   </p>
                   <p className="text-2xl font-black text-foreground">
-                    R$ 58.758.398,00
+                    {formatBRL(metrics.totalValor)}
                   </p>
                 </div>
                 <div className="p-5 rounded-2xl bg-primary/5 border border-primary/10">
@@ -172,7 +251,7 @@ export function AnaliseSintetica({ data }: Props) {
                     Área Predominante
                   </p>
                   <p className="text-2xl font-black text-foreground">
-                    Saúde (87%)
+                    {metrics.setorChave} ({metrics.setorChavePercent}%)
                   </p>
                 </div>
               </div>
@@ -189,21 +268,24 @@ export function AnaliseSintetica({ data }: Props) {
                 <div className="space-y-4">
                   {[
                     {
-                      title: "Concentração na Saúde",
-                      content:
-                        "Absorve mais de R$ 51 milhões. Padrão típico de dependência municipal de repasses federais.",
+                      title: `Concentração na ${metrics.setorChave}`,
+                      content: `Absorve ${formatBRL(
+                        metrics.porEstrutura[metrics.setorChave]
+                      )}. Padrão de investimento prioritário no município para o ano de ${metrics.ano}.`,
                       icon: <Activity className="h-4 w-4" />,
                     },
                     {
                       title: "Peso das Coletivas",
-                      content:
-                        "Bancada (R$ 17,8M) e Comissão (R$ 7,2M) são as principais fontes de grandes montantes.",
+                      content: metrics.valorColetivas > 0
+                        ? `Emendas de bancada e comissão somam ${formatBRL(metrics.valorColetivas)}, representando fonte significativa de grandes aportes.`
+                        : "Não foram identificadas emendas coletivas significativas para este período.",
                       icon: <Users className="h-4 w-4" />,
                     },
                     {
                       title: "Liderança Individual",
-                      content:
-                        "Aureo Ribeiro (R$ 8M), Marcelo Crivella (R$ 5,5M) e Bebeto (R$ 4M) lideram as proposições individuais.",
+                      content: metrics.lideresIndividuais.length > 0
+                        ? `${metrics.lideresIndividuais.join(", ")} lideram as proposições individuais no período selecionado.`
+                        : "Não foram identificadas proposições individuais predominantes.",
                       icon: <User className="h-4 w-4" />,
                     },
                   ].map((item, i) => (
