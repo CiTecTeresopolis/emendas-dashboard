@@ -159,10 +159,10 @@ const Index = () => {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
-            <div className="xl:col-span-2">
+            <div className="xl:col-span-3">
               <EstruturaChart data={filteredData} />
             </div>
-            <div className="xl:col-span-3">
+            <div className="xl:col-span-2">
               <AnaliseSintetica data={filteredData} />
             </div>
           </div>

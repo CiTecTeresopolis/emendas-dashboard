@@ -26,12 +26,17 @@ export function AnaliseSintetica({ data }: Props) {
     const totalValor = data.reduce((s, e) => s + e.valorProposto, 0);
 
     // Setor Chave (Estrutura com mais funding)
-    const porEstrutura = data.reduce((acc, e) => {
-      acc[e.estrutura] = (acc[e.estrutura] || 0) + e.valorProposto;
-      return acc;
-    }, {} as Record<string, number>);
+    const porEstrutura = data.reduce(
+      (acc, e) => {
+        acc[e.estrutura] = (acc[e.estrutura] || 0) + e.valorProposto;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
 
-    const setorChave = Object.entries(porEstrutura).sort((a, b) => b[1] - a[1])[0];
+    const setorChave = Object.entries(porEstrutura).sort(
+      (a, b) => b[1] - a[1],
+    )[0];
     const setorChavePercent = setorChave
       ? Math.round((setorChave[1] / totalValor) * 100)
       : 0;
@@ -42,7 +47,7 @@ export function AnaliseSintetica({ data }: Props) {
       (e) =>
         e.partido === "BANCADA" ||
         e.parlamentar.toLowerCase().includes("bancada") ||
-        e.parlamentar.toLowerCase().includes("comissão")
+        e.parlamentar.toLowerCase().includes("comissão"),
     );
     const valorColetivas = coletivas.reduce((s, e) => s + e.valorProposto, 0);
     const tipologiaPredominante =
@@ -55,22 +60,28 @@ export function AnaliseSintetica({ data }: Props) {
       (e) =>
         e.partido !== "BANCADA" &&
         !e.parlamentar.toLowerCase().includes("bancada") &&
-        !e.parlamentar.toLowerCase().includes("comissão")
+        !e.parlamentar.toLowerCase().includes("comissão"),
     );
-    const porParlamentarIndiv = individuais.reduce((acc, e) => {
-      acc[e.parlamentar] = (acc[e.parlamentar] || 0) + e.valorProposto;
-      return acc;
-    }, {} as Record<string, number>);
+    const porParlamentarIndiv = individuais.reduce(
+      (acc, e) => {
+        acc[e.parlamentar] = (acc[e.parlamentar] || 0) + e.valorProposto;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
     const lideresIndividuais = Object.entries(porParlamentarIndiv)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map((l) => l[0]);
 
     // Partidos com Maior Aporte (Top 5)
-    const porPartido = data.reduce((acc, e) => {
-      acc[e.partido] = (acc[e.partido] || 0) + e.valorProposto;
-      return acc;
-    }, {} as Record<string, number>);
+    const porPartido = data.reduce(
+      (acc, e) => {
+        acc[e.partido] = (acc[e.partido] || 0) + e.valorProposto;
+        return acc;
+      },
+      {} as Record<string, number>,
+    );
     const topPartidos = Object.entries(porPartido)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5)
@@ -134,7 +145,8 @@ export function AnaliseSintetica({ data }: Props) {
                 </span>
               </div>
               <p className="text-sm font-semibold text-foreground leading-snug">
-                Forte concentração na {metrics.setorChave} ({metrics.setorChavePercent}%)
+                Forte concentração na {metrics.setorChave} (
+                {metrics.setorChavePercent}%)
               </p>
             </div>
             <div className="space-y-1.5">
@@ -168,7 +180,9 @@ export function AnaliseSintetica({ data }: Props) {
                   </span>
                 ))
               ) : (
-                <span className="text-[11px] text-muted-foreground italic">Nenhum identificado</span>
+                <span className="text-[11px] text-muted-foreground italic">
+                  Nenhum identificado
+                </span>
               )}
             </div>
           </div>
@@ -230,9 +244,9 @@ export function AnaliseSintetica({ data }: Props) {
                 </div>
                 <p className="text-sm text-muted-foreground leading-relaxed bg-muted/30 p-4 rounded-xl border border-border/50">
                   O painel apresenta um retrato consolidado das emendas
-                  parlamentares destinadas a Teresópolis. Organiza
-                  valores, autores, áreas beneficiadas e origem dos recursos,
-                  permitindo identificar padrões de investimento político.
+                  parlamentares destinadas a Teresópolis. Organiza valores,
+                  autores, áreas beneficiadas e origem dos recursos, permitindo
+                  identificar padrões de investimento político.
                 </p>
               </section>
 
@@ -270,22 +284,24 @@ export function AnaliseSintetica({ data }: Props) {
                     {
                       title: `Concentração na ${metrics.setorChave}`,
                       content: `Absorve ${formatBRL(
-                        metrics.porEstrutura[metrics.setorChave]
+                        metrics.porEstrutura[metrics.setorChave],
                       )}. Padrão de investimento prioritário no município para o ano de ${metrics.ano}.`,
                       icon: <Activity className="h-4 w-4" />,
                     },
                     {
                       title: "Peso das Coletivas",
-                      content: metrics.valorColetivas > 0
-                        ? `Emendas de bancada e comissão somam ${formatBRL(metrics.valorColetivas)}, representando fonte significativa de grandes aportes.`
-                        : "Não foram identificadas emendas coletivas significativas para este período.",
+                      content:
+                        metrics.valorColetivas > 0
+                          ? `Emendas de bancada e comissão somam ${formatBRL(metrics.valorColetivas)}, representando fonte significativa de grandes aportes.`
+                          : "Não foram identificadas emendas coletivas significativas para este período.",
                       icon: <Users className="h-4 w-4" />,
                     },
                     {
                       title: "Liderança Individual",
-                      content: metrics.lideresIndividuais.length > 0
-                        ? `${metrics.lideresIndividuais.join(", ")} lideram as proposições individuais no período selecionado.`
-                        : "Não foram identificadas proposições individuais predominantes.",
+                      content:
+                        metrics.lideresIndividuais.length > 0
+                          ? `${metrics.lideresIndividuais.join(", ")} lideram as proposições individuais no período selecionado.`
+                          : "Não foram identificadas proposições individuais predominantes.",
                       icon: <User className="h-4 w-4" />,
                     },
                   ].map((item, i) => (
