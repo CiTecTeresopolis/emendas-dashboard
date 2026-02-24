@@ -6,6 +6,7 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  LabelList,
 } from "recharts";
 import {
   Emenda,
@@ -27,7 +28,7 @@ export function TopParlamentaresChart({ data }: Props) {
 
   const chartData = Object.entries(parlamentarTotals)
     .sort((a, b) => b[1] - a[1])
-    .slice(0, 5)
+    .slice(0, 3)
     .map(([name, value]) => ({
       name: name,
       value,
@@ -40,14 +41,14 @@ export function TopParlamentaresChart({ data }: Props) {
           <BarChart3 className="h-4 w-4 text-primary" />
         </div>
         <div>
-          <h3 className="text-lg font-bold">Top 5 Parlamentares</h3>
+          <h3 className="text-lg font-bold">Top 3 Parlamentares</h3>
           <p className="text-[12px] text-muted-foreground">
             Por valor proposto
           </p>
         </div>
       </div>
       <div className="px-4 pb-5">
-        <div className="h-[380px]">
+        <div className="h-[480px]">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart
               data={chartData}
@@ -81,6 +82,11 @@ export function TopParlamentaresChart({ data }: Props) {
                 cursor={{ fill: "hsl(210,14%,92%)", radius: 6 }}
               />
               <Bar dataKey="value" radius={[0, 8, 8, 0]} barSize={22}>
+                <LabelList
+                  dataKey="value"
+                  position="right"
+                  formatter={(value: number) => formatBRL(value)}
+                />
                 {chartData.map((_, i) => (
                   <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
                 ))}

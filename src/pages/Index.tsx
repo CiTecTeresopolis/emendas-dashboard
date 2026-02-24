@@ -151,12 +151,12 @@ const Index = () => {
           <KPICards data={filteredData} />
 
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
-            <div className="xl:col-span-3">
+            <div className="xl:col-span-6 h-[600px]">
               <TopParlamentaresChart data={filteredData} />
             </div>
-            <div className="xl:col-span-2">
+            {/* <div className="xl:col-span-2">
               <PartidoDonutChart data={filteredData} />
-            </div>
+            </div> */}
           </div>
           <div className="grid grid-cols-1 gap-6 xl:grid-cols-5">
             <div className="xl:col-span-3">

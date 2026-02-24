@@ -187,7 +187,7 @@ export function AnaliseSintetica({ data }: Props) {
             </div>
           </div>
 
-          <div className="py-5 space-y-3">
+          {/* <div className="py-5 space-y-3">
             <div className="flex items-center gap-2 text-muted-foreground">
               <Landmark className="h-4 w-4" />
               <span className="text-[11px] font-bold uppercase tracking-wider">
@@ -197,7 +197,7 @@ export function AnaliseSintetica({ data }: Props) {
             <p className="text-sm font-medium text-foreground/80">
               {metrics.topPartidos.join(", ")}.
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="px-6 py-3 bg-muted/10 border-t border-border/50 text-[10px] text-muted-foreground text-right italic">
