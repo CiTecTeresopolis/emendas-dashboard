@@ -53,7 +53,7 @@ export function TopParlamentaresChart({ data }: Props) {
             <BarChart
               data={chartData}
               layout="vertical"
-              margin={{ left: 10, right: 20, top: 10, bottom: 5 }}
+              margin={{ left: 10, right: 120, top: 10, bottom: 5 }}
             >
               <XAxis
                 type="number"
