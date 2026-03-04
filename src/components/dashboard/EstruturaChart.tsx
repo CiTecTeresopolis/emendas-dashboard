@@ -116,7 +116,7 @@ export function EstruturaChart({ data }: Props) {
                 cy="45%"
                 innerRadius={75}
                 outerRadius={120}
-                paddingAngle={4}
+                paddingAngle={0}
                 dataKey="value"
                 onMouseEnter={(_, index) => setActiveIndex(index)}
                 onMouseLeave={() => setActiveIndex(undefined)}
