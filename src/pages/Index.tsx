@@ -132,7 +132,7 @@ const Index = () => {
               </span>
             </button>
             <a
-              href="https://dados.teresopolis.rj.gov.br/dataset/relacao-de-convenios-emendas-parlamentares/resource/3c5683fc-f99d-4597-a2e7-e7cfcd781e2f"
+              href="https://dados.teresopolis.rj.gov.br/dataset/relacao-de-convenios-emendas-parlamentares"
               target="_blank"
               className="hidden sm:flex items-center gap-2 rounded-full bg-sidebar-accent px-3.5 py-1.5"
             >
