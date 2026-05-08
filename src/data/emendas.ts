@@ -41,6 +41,19 @@ export const emendasData: Emenda[] = [
   { origem: "Ministério da Saúde", parlamentar: "Deputado Federal Marcelo Crivella", partido: "REPUBLICANOS", programa: "Aquisição de equipamentos e materiais permanentes para saúde", proposta: "91127425005", valorProposto: 4829040, contrapartida: 0, anoVigencia: 2025, objeto: "Aquisição de equipamentos e materiais permanentes para estabelecimentos de saúde.", estrutura: "Saúde" },
   { origem: "Ministério da Saúde", parlamentar: "Senador Flávio Bolsonaro", partido: "PL", programa: "Aquisição de equipamentos e materiais permanentes para saúde", proposta: "91127425006", valorProposto: 1489660, contrapartida: 0, anoVigencia: 2025, objeto: "Aquisição de equipamentos e materiais permanentes para estabelecimentos de saúde.", estrutura: "Saúde" },
   { origem: "Ministério da Saúde", parlamentar: "Deputado Federal Hugo Leal", partido: "PSD", programa: "Aquisição de equipamentos e materiais permanentes para saúde", proposta: "91127425007", valorProposto: 995460, contrapartida: 0, anoVigencia: 2025, objeto: "Aquisição de equipamentos e materiais permanentes para estabelecimentos de saúde.", estrutura: "Saúde" },
+   {
+    "origem": "Ministério da Integração e do Desenvolvimento Regional",
+    "parlamentar": "Deputado Federal Gutemberg Reis",
+    "partido": "MDB",
+    "programa": "Dispõe sobre a instalação de infraestrutura de geração distribuída de energia elétrica fotovoltaica nas edificações destinadas à Administração Pública Municipal e Federal.",
+    "proposta": "90320252087334",
+    "valorProposto": 1485000.0,
+    "contrapartida": 0.0,
+    "anoVigencia": 2025,
+    "objeto": "Dispõe sobre a instalação de infraestrutura de geração distribuída de energia elétrica fotovoltaica nas edificações destinadas à Administração Pública Municipal e Federal.",
+    "estrutura": "Obras e Serviços Públicos"
+  },
+  
   // 2024
   {
     "origem": "Fundo Municipal de Saúde do Município de Teresópolis",
